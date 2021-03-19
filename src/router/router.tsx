@@ -8,6 +8,7 @@ import {
 
 import DefaultHeader from '../components/layouts/DefaultHeader'
 import Products from '../pages/Products'
+import Cart from '../pages/Cart'
 
 function RootRouter () {
   return (
@@ -17,6 +18,9 @@ function RootRouter () {
         <Switch>
           <Route path="/products">
             <Products />
+          </Route>
+          <Route path="/cart">
+            <Cart />
           </Route>
           <Route path="*">
             <Redirect from="*" to="/products" />

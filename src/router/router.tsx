@@ -1,18 +1,19 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect
 } from 'react-router-dom'
+
+import DefaultHeader from '../components/layouts/DefaultHeader'
 import Products from '../pages/Products'
 
 function RootRouter () {
   return (
     <Router>
-      <Fragment>
-        {/* @TODO: header */}
-
+      <React.Fragment>
+        <DefaultHeader />
         <Switch>
           <Route path="/products">
             <Products />
@@ -21,7 +22,7 @@ function RootRouter () {
             <Redirect from="*" to="/products" />
           </Route>
         </Switch>
-      </Fragment>
+      </React.Fragment>
     </Router>
   )
 }

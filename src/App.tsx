@@ -1,10 +1,9 @@
 import React from 'react'
+import RootRouter from './router/router'
 
 function App () {
   return (
-    <div className="App">
-      <h1>Hello World</h1>
-    </div>
+    <RootRouter />
   )
 }
 

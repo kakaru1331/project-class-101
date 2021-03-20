@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Container, Typography, Grid, Card, CardMedia, CardContent, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   ShoppingCart as ShoppingCartIcon,
   RemoveShoppingCart as RemoveShoppingCartIcon
 } from '@material-ui/icons'
+import { getProductItemsUsingPaging, IProductItem } from '../services/productService'
+import useQuery from '../utils/useQuery'
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -21,7 +23,8 @@ const useStyles = makeStyles((theme) => ({
   },
   cardContent: {
     flexGrow: 1,
-    paddingBottom: 0
+    paddingBottom: 0,
+    maxHeight: '60px'
   },
   controllArea: {
     paddingRight: '5px',
@@ -33,29 +36,57 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const cards = [1, 2, 3, 4, 5]
+function getPageNumberFromQuery (value: string | null): number {
+  const DEFAULT_PAGE_NUMBER = 1
+
+  if (value === null) {
+    return DEFAULT_PAGE_NUMBER
+  }
+
+  const parsed = parseInt(value)
+
+  if (isNaN(parsed)) {
+    return DEFAULT_PAGE_NUMBER
+  }
+
+  if (parsed < 1) {
+    return DEFAULT_PAGE_NUMBER
+  }
+
+  return parsed
+}
 
 function Products () {
   const classes = useStyles()
+  const [productItems, setProductItems] = useState<IProductItem[] | null>(null)
+  const query = useQuery()
+
+  useEffect(() => {
+    const pageNumber = getPageNumberFromQuery(query.get('page'))
+
+    setProductItems(getProductItemsUsingPaging({ pageNumber }))
+  }, [])
 
   return (
     <main>
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
-          {cards.map((card) => (
-            <Grid item key={card} xs={12} sm={6} md={4}>
+          {productItems !== null && productItems.map((productItem) => (
+            <Grid item key={productItem.id} xs={12} sm={6} md={4}>
               <Card className={classes.card}>
                 <CardMedia
                   className={classes.cardMedia}
-                  image="https://source.unsplash.com/random"
+                  image={productItem.coverImage}
                   title="Image title"
                 />
                 <CardContent className={classes.cardContent}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    Product Name
+                  <Typography gutterBottom>
+                    {productItem.title}
                   </Typography>
+                </CardContent>
+                <CardContent className={classes.cardContent}>
                   <Typography>
-                    Price
+                    {productItem.price}원
                   </Typography>
                 </CardContent>
                 <Grid container justify="flex-end"

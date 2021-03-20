@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom'
 
 import DefaultHeader from '../components/layouts/DefaultHeader'
+import DefaultFooter from '../components/layouts/DefaultFooter'
 import Products from '../pages/Products'
 import Cart from '../pages/Cart'
 
@@ -26,6 +27,7 @@ function RootRouter () {
             <Redirect from="*" to="/products" />
           </Route>
         </Switch>
+        <DefaultFooter />
       </React.Fragment>
     </Router>
   )

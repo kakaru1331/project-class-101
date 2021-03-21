@@ -1,5 +1,4 @@
 import productItems from '../data/productItems'
-
 interface IProductItem {
   id: string,
   title: string,
@@ -8,10 +7,13 @@ interface IProductItem {
   score: number,
   availableCoupon?: boolean
 }
-
 interface IPagingOptions {
   pageNumber: number,
   pageSize?: number
+}
+
+interface IPaginationOptions {
+  pageSize: number
 }
 
 function getProductItemsUsingPaging (options: IPagingOptions): IProductItem[] | null {
@@ -25,6 +27,13 @@ function getProductItemsUsingPaging (options: IPagingOptions): IProductItem[] | 
   return pagedProductItems
 }
 
-export { getProductItemsUsingPaging }
+function getPaginationOfProductItems (options: IPaginationOptions) {
+  const { pageSize = 5 } = options
+  const totalPage = Math.ceil(productItems.length / pageSize)
 
-export type { IProductItem, IPagingOptions }
+  return totalPage
+}
+
+export { getProductItemsUsingPaging, getPaginationOfProductItems }
+
+export type { IProductItem, IPagingOptions, IPaginationOptions }

@@ -93,6 +93,22 @@ function ProductItem (props: IProps) {
     dispatch(updateCartItems(updatedCartItems))
   }
 
+  const handleRemoveClick = () => {
+    removeItem(productItem.id)
+  }
+
+  const removeItem = (productId: string) => {
+    const updatedCartItems = cartItems.filter((cartItem) => {
+      return cartItem.productInfo.id !== productId
+    })
+
+    dispatch(updateCartItems(updatedCartItems))
+  }
+
+  const canRemoveItem = cartItems.some((cartItem) => {
+    return cartItem.productInfo.id === productItem.id
+  })
+
   return (
     <Grid item key={productItem.id} xs={12} sm={6} md={4}>
       <Card className={classes.card}>
@@ -114,12 +130,14 @@ function ProductItem (props: IProps) {
         <Grid container justify="flex-end"
           className={classes.controllArea}
         >
-          <Button size="small" color="primary" onClick={handleCartClick}>
-            <ShoppingCartIcon className={classes.cart}/>
-          </Button>
-          <Button size="small" color="primary">
-            <RemoveShoppingCartIcon className={classes.cart}/>
-          </Button>
+          {canRemoveItem
+            ? <Button size="small" color="primary" onClick={handleRemoveClick}>
+                <RemoveShoppingCartIcon className={classes.cart}/>
+              </Button>
+            : <Button size="small" color="primary" onClick={handleCartClick}>
+                <ShoppingCartIcon className={classes.cart}/>
+              </Button>
+          }
         </Grid>
       </Card>
     </Grid>

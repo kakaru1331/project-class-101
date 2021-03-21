@@ -1,5 +1,5 @@
-import React from 'react'
-import { Typography, Grid, Card, CardMedia, CardContent, Button } from '@material-ui/core'
+import React, { useState, SyntheticEvent } from 'react'
+import { Typography, Grid, Card, CardMedia, CardContent, Button, Snackbar, SnackbarCloseReason } from '@material-ui/core'
 import {
   ShoppingCart as ShoppingCartIcon,
   RemoveShoppingCart as RemoveShoppingCartIcon
@@ -9,6 +9,8 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { IProductItem } from '../services/productService'
 import { selectCartItems, putCartItem, CartItem, updateCartItems } from '../store/slices/cartSlice'
+import Alert from './Alert'
+
 interface IProps {
   productItem: IProductItem
 }
@@ -42,6 +44,9 @@ function ProductItem (props: IProps) {
   const classes = useStyles()
   const cartItems = useSelector(selectCartItems)
   const dispatch = useDispatch()
+  const [isOpenSnackbar, setIsOpenSnackbar] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [severity, setSeverity] = useState('success')
 
   const handleCartClick = () => {
     if (!isItemAlreadyIn()) {
@@ -49,6 +54,8 @@ function ProductItem (props: IProps) {
     } else {
       updateItem(productItem.id)
     }
+
+    showPutMessage()
   }
 
   const isItemAlreadyIn = () => {
@@ -95,6 +102,7 @@ function ProductItem (props: IProps) {
 
   const handleRemoveClick = () => {
     removeItem(productItem.id)
+    showRemoveMessage()
   }
 
   const removeItem = (productId: string) => {
@@ -108,6 +116,26 @@ function ProductItem (props: IProps) {
   const canRemoveItem = cartItems.some((cartItem) => {
     return cartItem.productInfo.id === productItem.id
   })
+
+  const showPutMessage = () => {
+    setIsOpenSnackbar(true)
+    setSeverity('success')
+    setSnackbarMessage('장바구니에 상품을 담았습니다')
+  }
+
+  const showRemoveMessage = () => {
+    setIsOpenSnackbar(true)
+    setSeverity('info')
+    setSnackbarMessage('장바구니에서 상품을 제외했습니다')
+  }
+
+  const handleClose = (event: SyntheticEvent, reason: SnackbarCloseReason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    setIsOpenSnackbar(false)
+  }
 
   return (
     <Grid item key={productItem.id} xs={12} sm={6} md={4}>
@@ -138,6 +166,11 @@ function ProductItem (props: IProps) {
                 <ShoppingCartIcon className={classes.cart}/>
               </Button>
           }
+          <Snackbar open={isOpenSnackbar} autoHideDuration={1500} onClose={handleClose}>
+            <Alert severity={severity} elevation="6" onClose={handleClose}>
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
         </Grid>
       </Card>
     </Grid>

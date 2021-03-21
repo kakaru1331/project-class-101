@@ -5,8 +5,10 @@ import {
   RemoveShoppingCart as RemoveShoppingCartIcon
 } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
-import { IProductItem } from '../services/productService'
+import { useSelector, useDispatch } from 'react-redux'
 
+import { IProductItem } from '../services/productService'
+import { selectCartItems, putCartItem, CartItem, updateCartItems } from '../store/slices/cartSlice'
 interface IProps {
   productItem: IProductItem
 }
@@ -38,6 +40,58 @@ const useStyles = makeStyles((theme) => ({
 function ProductItem (props: IProps) {
   const { productItem } = props
   const classes = useStyles()
+  const cartItems = useSelector(selectCartItems)
+  const dispatch = useDispatch()
+
+  const handleCartClick = () => {
+    if (!isItemAlreadyIn()) {
+      putItem()
+    } else {
+      updateItem(productItem.id)
+    }
+  }
+
+  const isItemAlreadyIn = () => {
+    return cartItems.some((cartItem) => {
+      return cartItem.productInfo.id === productItem.id
+    })
+  }
+
+  const putItem = () => {
+    const now = new Date().toISOString().slice(0, 19)
+    const cartItem: CartItem = {
+      productInfo: productItem,
+      cartInfo: {
+        amount: 1,
+        createdAt: now,
+        updatedAt: now
+      }
+    }
+    dispatch(putCartItem(cartItem))
+  }
+
+  const updateItem = (productId: string) => {
+    const updatedCartItems = cartItems.map((cartItem) => {
+      if (productId !== cartItem.productInfo.id) {
+        return cartItem
+      }
+
+      const { amount, createdAt } = cartItem.cartInfo
+      const now = new Date().toISOString().slice(0, 19)
+      const updatedCartItem: CartItem = {
+        productInfo: cartItem.productInfo,
+        cartInfo: {
+          amount: amount + 1,
+          createdAt: createdAt,
+          updatedAt: now
+        }
+      }
+
+      return updatedCartItem
+    })
+
+    dispatch(updateCartItems(updatedCartItems))
+  }
 
   return (
     <Grid item key={productItem.id} xs={12} sm={6} md={4}>
@@ -60,7 +114,7 @@ function ProductItem (props: IProps) {
         <Grid container justify="flex-end"
           className={classes.controllArea}
         >
-          <Button size="small" color="primary">
+          <Button size="small" color="primary" onClick={handleCartClick}>
             <ShoppingCartIcon className={classes.cart}/>
           </Button>
           <Button size="small" color="primary">

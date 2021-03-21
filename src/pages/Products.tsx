@@ -1,11 +1,14 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
 import { Container, Typography, Grid, Card, CardMedia, CardContent, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   ShoppingCart as ShoppingCartIcon,
   RemoveShoppingCart as RemoveShoppingCartIcon
 } from '@material-ui/icons'
-import { getProductItemsUsingPaging, IProductItem } from '../services/productService'
+import Pagination from '@material-ui/lab/Pagination'
+import { getProductItemsUsingPaging, IProductItem, getPaginationOfProductItems } from '../services/productService'
 import useQuery from '../utils/useQuery'
 
 const useStyles = makeStyles((theme) => ({
@@ -59,13 +62,23 @@ function getPageNumberFromQuery (value: string | null): number {
 function Products () {
   const classes = useStyles()
   const [productItems, setProductItems] = useState<IProductItem[] | null>(null)
+  const [page, setPage] = useState<number>()
+  const [totalPage, setTotalPage] = useState<number>()
   const query = useQuery()
+  const history = useHistory()
+  const location = useLocation();
+
+  const handlePageChange = (event: unknown, pageNumber: number) => {
+    history.push(`/products?page=${pageNumber}`)
+  }
 
   useEffect(() => {
     const pageNumber = getPageNumberFromQuery(query.get('page'))
 
     setProductItems(getProductItemsUsingPaging({ pageNumber }))
-  }, [])
+    setTotalPage(getPaginationOfProductItems({ pageSize: 5 }))
+    setPage(pageNumber)
+  }, [location])
 
   return (
     <main>
@@ -102,6 +115,15 @@ function Products () {
               </Card>
             </Grid>
           ))}
+          <Grid container justify="center">
+            {page &&
+            <Pagination color="primary"
+              count={totalPage}
+              page={page}
+              onChange={handlePageChange}
+            />
+            }
+          </Grid>
         </Grid>
       </Container>
     </main>

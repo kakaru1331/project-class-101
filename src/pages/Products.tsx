@@ -86,7 +86,7 @@ function Products () {
                 </CardContent>
                 <CardContent className={classes.cardContent}>
                   <Typography>
-                    {productItem.price}원
+                    {productItem.price.toLocaleString()}원
                   </Typography>
                 </CardContent>
                 <Grid container justify="flex-end"

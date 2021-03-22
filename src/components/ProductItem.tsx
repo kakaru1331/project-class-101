@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { IProductItem } from '../services/productService'
-import { selectCartItems, putCartItem, CartItem, updateCartItems } from '../store/slices/cartSlice'
+import { selectCartItems, putCartItem, CartItem, updateCartItems, selectCartItemsCount } from '../store/slices/cartSlice'
 import Alert from './Alert'
 
 interface IProps {
@@ -42,8 +42,10 @@ const useStyles = makeStyles((theme) => ({
 function ProductItem (props: IProps) {
   const { productItem } = props
   const classes = useStyles()
-  const cartItems = useSelector(selectCartItems)
   const dispatch = useDispatch()
+  const cartItems = useSelector(selectCartItems)
+  const cartItemsCount = useSelector(selectCartItemsCount)
+
   const [isOpenSnackbar, setIsOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [severity, setSeverity] = useState('success')
@@ -53,7 +55,7 @@ function ProductItem (props: IProps) {
       updateItem(productItem.id)
       showPutMessage()
     } else {
-      if (cartItems.length < 3) {
+      if (cartItemsCount < 3) {
         putItem()
         showPutMessage()
       } else {

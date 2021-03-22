@@ -134,6 +134,8 @@ function CartItem (props: IProps) {
   }
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const isChecked = event.target.checked
+
     const updatedCartItems = cartItems.map((item) => {
       if (cartItem.productInfo.id !== item.productInfo.id) {
         return item
@@ -147,7 +149,7 @@ function CartItem (props: IProps) {
         cartInfo: {
           ...item.cartInfo,
           updatedAt: now,
-          checked: event.target.checked
+          checked: isChecked
         }
       }
 

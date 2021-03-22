@@ -49,13 +49,17 @@ function ProductItem (props: IProps) {
   const [severity, setSeverity] = useState('success')
 
   const handleCartClick = () => {
-    if (!isItemAlreadyIn()) {
-      putItem()
-    } else {
+    if (isItemAlreadyIn()) {
       updateItem(productItem.id)
+      showPutMessage()
+    } else {
+      if (cartItems.length < 3) {
+        putItem()
+        showPutMessage()
+      } else {
+        showLimitMessage()
+      }
     }
-
-    showPutMessage()
   }
 
   const isItemAlreadyIn = () => {
@@ -135,6 +139,12 @@ function ProductItem (props: IProps) {
     }
 
     setIsOpenSnackbar(false)
+  }
+
+  const showLimitMessage = () => {
+    setIsOpenSnackbar(true)
+    setSeverity('warning')
+    setSnackbarMessage('장바구니는 최대 3종류의 상품까지 담을 수 있습니다')
   }
 
   return (

@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, FormControlLabel, Checkbox } from '@material-ui/core'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 import CartItem from './CartItem'
-import { selectCartItems } from '../store/slices/cartSlice'
+import { selectCartItems, updateCheckedAll } from '../store/slices/cartSlice'
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -29,6 +29,19 @@ const useStyles = makeStyles((theme) => ({
 function CartItemList () {
   const classes = useStyles()
   const cartItems = useSelector(selectCartItems)
+  const dispatch = useDispatch()
+
+  const handleSelectChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const isChecked = event.target.checked
+    const now = new Date().toISOString().slice(0, 19)
+
+    const payload = {
+      checked: isChecked,
+      updatedAt: now
+    }
+
+    dispatch(updateCheckedAll(payload))
+  }
 
   return (
     <Container className={classes.tableGrid} maxWidth="md">
@@ -40,8 +53,8 @@ function CartItemList () {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      name="checkedB"
                       color="primary"
+                      onChange={handleSelectChange}
                     />
                   }
                   label="전체선택"

@@ -76,6 +76,7 @@ function ProductItem (props: IProps) {
       productInfo: productItem,
       cartInfo: {
         amount: 1,
+        checked: true,
         createdAt: now,
         updatedAt: now
       }
@@ -89,13 +90,13 @@ function ProductItem (props: IProps) {
         return cartItem
       }
 
-      const { amount, createdAt } = cartItem.cartInfo
+      const { amount } = cartItem.cartInfo
       const now = new Date().toISOString().slice(0, 19)
       const updatedCartItem: CartItem = {
         productInfo: cartItem.productInfo,
         cartInfo: {
+          ...cartItem.cartInfo,
           amount: amount + 1,
-          createdAt: createdAt,
           updatedAt: now
         }
       }
@@ -155,7 +156,6 @@ function ProductItem (props: IProps) {
         <CardMedia
           className={classes.cardMedia}
           image={productItem.coverImage}
-          title="Image title"
         />
         <CardContent className={classes.cardContent}>
           <Typography gutterBottom>

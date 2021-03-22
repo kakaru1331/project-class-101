@@ -15,8 +15,13 @@ export interface CartItem {
 interface CartInfo {
   amount: number,
   checked: boolean,
-  createdAt: String,
-  updatedAt: String
+  createdAt: string,
+  updatedAt: string
+}
+
+interface UpdateCheckedAllPayload {
+  checked: boolean,
+  updatedAt: string
 }
 
 const initialState: CartState = {
@@ -32,11 +37,26 @@ export const cartSlice = createSlice({
     },
     updateCartItems: (state, { payload }: PayloadAction<CartItem[]>) => {
       state.cartItems = payload
+    },
+    updateCheckedAll: (state, { payload }: PayloadAction<UpdateCheckedAllPayload>) => {
+      const { checked, updatedAt } = payload
+      state.cartItems = state.cartItems.map((item: CartItem) => {
+        return {
+          productInfo: {
+            ...item.productInfo
+          },
+          cartInfo: {
+            ...item.cartInfo,
+            checked,
+            updatedAt
+          }
+        }
+      })
     }
   }
 })
 
-export const { putCartItem, updateCartItems } = cartSlice.actions
+export const { putCartItem, updateCartItems, updateCheckedAll } = cartSlice.actions
 
 export const selectCartItems = (state: RootState) => state.cart.cartItems
 export const selectCartItemsCount = (state: RootState) => state.cart.cartItems.length

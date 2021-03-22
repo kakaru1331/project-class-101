@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 
 import { selectCartItemsCount } from '../store/slices/cartSlice'
 import EmptyCart from '../components/EmptyCart'
+import CartItemList from '../components/CartItemList'
 
 function Cart () {
   const cartItemsCount = useSelector(selectCartItemsCount)
@@ -11,7 +12,7 @@ function Cart () {
     <main>
       {cartItemsCount === 0
         ? <EmptyCart />
-        : <h1>Cart</h1>
+        : <CartItemList />
       }
     </main>
   )

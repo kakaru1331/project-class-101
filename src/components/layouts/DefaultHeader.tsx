@@ -1,11 +1,16 @@
 import React from 'react'
-import { AppBar, CssBaseline, Toolbar, Typography, Grid } from '@material-ui/core'
+import { AppBar, CssBaseline, Toolbar, Typography, Grid, Badge } from '@material-ui/core'
 import { ShoppingCart as ShoppingCartIcon } from '@material-ui/icons'
 import {
   Link
 } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+
+import { selectCartItemsCount } from '../../store/slices/cartSlice'
 
 function DefaultHeader () {
+  const cartItemsCount = useSelector(selectCartItemsCount)
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -18,7 +23,9 @@ function DefaultHeader () {
           </Link>
           <Grid container justify="flex-end">
             <Link to="/cart">
-              <ShoppingCartIcon style={{ color: 'black' }} />
+              <Badge badgeContent={cartItemsCount} color="primary">
+                <ShoppingCartIcon style={{ color: 'black' }} />
+              </Badge>
             </Link>
           </Grid>
         </Toolbar>

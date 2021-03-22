@@ -14,6 +14,7 @@ export interface CartItem {
 
 interface CartInfo {
   amount: number,
+  checked: boolean,
   createdAt: String,
   updatedAt: String
 }

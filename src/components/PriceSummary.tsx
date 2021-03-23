@@ -72,7 +72,15 @@ function PriceSummary (props: IProps) {
 
     if (selectedCoupon) {
       if (productsPrice && selectedCoupon.type === 'rate' && selectedCoupon?.discountRate) {
-        const sale = Math.floor(productsPrice * (selectedCoupon.discountRate / 100))
+        const couponApplicablePrice = cartItems.reduce((acc, cur) => {
+          if ((cur.cartInfo.checked === false) || cur.productInfo.availableCoupon === false) {
+            return acc
+          }
+
+          return acc + (cur.productInfo.price * cur.cartInfo.amount)
+        }, 0)
+
+        const sale = Math.floor(couponApplicablePrice * (selectedCoupon.discountRate / 100))
         setDiscounted(sale)
       } else if (selectedCoupon.type === 'amount' && selectedCoupon?.discountAmount) {
         setDiscounted(selectedCoupon.discountAmount)

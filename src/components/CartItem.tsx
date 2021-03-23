@@ -235,6 +235,14 @@ function CartItem (props: IProps) {
     dispatch(updateCartItems(updatedCartItems))
   }
 
+  const handleDeleteButtonClick = () => {
+    const updatedCartItems = cartItems.filter((item) => {
+      return cartItem.productInfo.id !== item.productInfo.id
+    })
+
+    dispatch(updateCartItems(updatedCartItems))
+  }
+
   return (
     <TableRow>
       <TableCell>
@@ -290,7 +298,7 @@ function CartItem (props: IProps) {
               onBlur={handleTextBlur}
             />
           </span>
-          <IconButton aria-label="delete" className={classes.deleteIcon}>
+          <IconButton aria-label="delete" className={classes.deleteIcon} onClick={handleDeleteButtonClick}>
             <DeleteIcon fontSize="small" />
           </IconButton>
         </Grid>

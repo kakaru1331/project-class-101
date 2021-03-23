@@ -5,6 +5,9 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import CartItem from './CartItem'
 import { selectCartItems, updateCheckedAll } from '../store/slices/cartSlice'
+interface IProps {
+  updateCallback: Function
+}
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -26,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function CartItemList () {
+function CartItemList (props: IProps) {
+  const { updateCallback } = props
   const classes = useStyles()
   const cartItems = useSelector(selectCartItems)
   const dispatch = useDispatch()
@@ -41,6 +45,7 @@ function CartItemList () {
     }
 
     dispatch(updateCheckedAll(payload))
+    updateCallback(null)
   }
 
   return (
@@ -67,7 +72,7 @@ function CartItemList () {
           <TableBody>
           {
             cartItems.map((cartItem) => (
-              <CartItem cartItem={cartItem} key={cartItem.productInfo.id} />
+              <CartItem cartItem={cartItem} key={cartItem.productInfo.id} updateCallback={updateCallback} />
             ))
           }
           </TableBody>

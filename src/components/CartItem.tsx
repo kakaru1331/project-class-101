@@ -7,7 +7,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { CartItem as ICartItem, selectCartItems, updateCartItems } from '../store/slices/cartSlice'
 
 interface IProps {
-  cartItem: ICartItem
+  cartItem: ICartItem,
+  updateCallback: Function
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -51,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function CartItem (props: IProps) {
-  const { cartItem } = props
+  const { cartItem, updateCallback } = props
   const classes = useStyles()
   const dispatch = useDispatch()
   const cartItems = useSelector(selectCartItems)
@@ -157,6 +158,7 @@ function CartItem (props: IProps) {
     })
 
     dispatch(updateCartItems(updatedCartItems))
+    updateCallback(null)
   }
 
   const handleTextChange = (event: ChangeEvent<HTMLInputElement>) => {

@@ -8,6 +8,11 @@ interface ICouponForSelect extends ICoupon {
   disabled: boolean
 }
 
+interface IProps {
+  updateCallback: Function,
+  selectedCoupon: ICoupon | null
+}
+
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -18,9 +23,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function Coupon () {
+function Coupon (props: IProps) {
+  const { updateCallback, selectedCoupon } = props
   const classes = useStyles()
-  const [selectedCoupon, setSelectedCoupon] = useState<string>()
+  const [couponValue, setCouponValue] = useState<string>('')
   const [couponsForSelect, setCouponsForSelect] = useState<ICouponForSelect[]>()
 
   useEffect(() => {
@@ -33,10 +39,23 @@ function Coupon () {
     })
 
     setCouponsForSelect(mapped)
-  }, [])
+
+    if (selectedCoupon === null) {
+      setCouponValue('')
+    }
+  }, [selectedCoupon])
 
   const handleSelectChange = (event: ChangeEvent<{ value: unknown }>) => {
-    setSelectedCoupon(event.target.value as string)
+    const couponType = event.target.value as string
+    setCouponValue(couponType)
+
+    if (couponsForSelect) {
+      const coupon = couponsForSelect.find((item) => {
+        return item.type === couponType
+      })
+
+      updateCallback(coupon)
+    }
   }
 
   return (
@@ -48,7 +67,7 @@ function Coupon () {
         <Select
           labelId="placeholder-label-label"
           id="placeholder-label"
-          value={selectedCoupon}
+          value={couponValue}
           onChange={handleSelectChange}
           displayEmpty
           className={classes.selectEmpty}

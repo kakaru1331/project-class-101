@@ -1,8 +1,10 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Container, InputLabel, MenuItem, FormControl, Select } from '@material-ui/core'
+import { useSelector } from 'react-redux'
 
 import { getCoupons, ICoupon } from '../services/couponService'
+import { selectCartItems } from '../store/slices/cartSlice'
 
 interface ICouponForSelect extends ICoupon {
   disabled: boolean
@@ -28,18 +30,30 @@ function Coupon (props: IProps) {
   const classes = useStyles()
   const [couponValue, setCouponValue] = useState<string>('')
   const [couponsForSelect, setCouponsForSelect] = useState<ICouponForSelect[]>()
+  const cartItems = useSelector(selectCartItems)
 
   useEffect(() => {
     const coupons = getCoupons()
+
+    const hasCheckedItem = cartItems.some((item) => {
+      return item.cartInfo.checked
+    })
+
+    const availableCoupon = cartItems.some((item) => {
+      return item.cartInfo.checked && item.productInfo.availableCoupon !== false
+    })
+
+    const isCouponforbidden = (!hasCheckedItem || !availableCoupon)
     const mapped = coupons.map(item => {
       return {
         ...item,
-        disabled: false
+        disabled: isCouponforbidden
       }
     })
-
     setCouponsForSelect(mapped)
+  }, [cartItems])
 
+  useEffect(() => {
     if (selectedCoupon === null) {
       setCouponValue('')
     }
